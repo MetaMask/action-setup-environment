@@ -317,7 +317,7 @@ runs:
 
     - name: Set up Node.js
       if: ${{ steps.try-skip-setup.outputs.cache-hit != 'true' }}
-      uses: actions/setup-node@v6
+      uses: actions/setup-node@v7
       id: setup-node
       with:
         node-version: ${{ steps.compute-node-version.outputs.node-version }}
@@ -360,7 +360,7 @@ runs:
 
     - name: Conditionally restore action/setup-node cache
       if: ${{ steps.try-skip-setup.outputs.cache-hit != 'true' && inputs.is-high-risk-environment != 'true' && steps.download-node-modules.outputs.cache-hit != 'true' && inputs.skip-install != 'true' }}
-      uses: actions/setup-node@v6
+      uses: actions/setup-node@v7
       id: restore-setup-node-cache
       with:
         node-version: ${{ steps.setup-node.outputs.node-version }}
