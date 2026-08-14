@@ -299,7 +299,7 @@ runs:
     - name: Try skipping setup if node-modules cache available
       if: ${{ inputs.is-high-risk-environment == 'false' && inputs.cache-node-modules == 'true' && steps.download-repository-metadata.outputs.yarn-lock-available == 'true' && inputs.force-setup != 'true' && inputs.skip-install != 'true' }}
       id: try-skip-setup
-      uses: actions/cache/restore@v6
+      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ${{ steps.compute-node-modules-cache-paths.outputs.paths }}
         key: node-modules-${{ runner.os }}-${{ runner.arch }}-${{ steps.compute-node-version.outputs.node-version }}-${{ hashFiles('yarn.lock') }}
@@ -307,7 +307,7 @@ runs:
 
     # Checkout repository only if not already checked out.
     - name: Checkout repository
-      uses: actions/checkout@v7
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       if: ${{ steps.try-skip-setup.outputs.cache-hit != 'true' && hashFiles('.git') == '' }}
       with:
         fetch-depth: ${{ inputs.fetch-depth }}
@@ -317,7 +317,7 @@ runs:
 
     - name: Set up Node.js
       if: ${{ steps.try-skip-setup.outputs.cache-hit != 'true' }}
-      uses: actions/setup-node@v6
+      uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
       id: setup-node
       with:
         node-version: ${{ steps.compute-node-version.outputs.node-version }}
@@ -353,14 +353,14 @@ runs:
     - name: Download node_modules cache and Yarn install state
       if: ${{ steps.try-skip-setup.outputs.cache-hit != 'true' && inputs.is-high-risk-environment == 'false' && inputs.skip-install != 'true' }}
       id: download-node-modules
-      uses: actions/cache/restore@v6
+      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ${{ steps.compute-node-modules-cache-paths.outputs.paths }}
         key: node-modules-${{ runner.os }}-${{ runner.arch }}-${{ steps.compute-node-version.outputs.node-version }}-${{ hashFiles('yarn.lock') }}
 
     - name: Conditionally restore action/setup-node cache
       if: ${{ steps.try-skip-setup.outputs.cache-hit != 'true' && inputs.is-high-risk-environment != 'true' && steps.download-node-modules.outputs.cache-hit != 'true' && inputs.skip-install != 'true' }}
-      uses: actions/setup-node@v6
+      uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
       id: restore-setup-node-cache
       with:
         node-version: ${{ steps.setup-node.outputs.node-version }}
@@ -379,7 +379,7 @@ runs:
     # run the yarn install
     - name: Install dependencies
       if: ${{ steps.try-skip-setup.outputs.cache-hit != 'true' && steps.download-node-modules.outputs.cache-hit != 'true' && inputs.skip-install != 'true' }}
-      uses: MetaMask/action-retry-command@v1
+      uses: MetaMask/action-retry-command@2377689bfd9a03010a956b7c14273a2fc43d20cf # v1.0.1
       with:
         command: yarn --immutable
         shell: bash
@@ -390,7 +390,7 @@ runs:
     # we're restoring the cache.
     - name: Run `allow-scripts`
       if: ${{ steps.try-skip-setup.outputs.cache-hit != 'true' && inputs.skip-allow-scripts != 'true' && steps.download-node-modules.outputs.cache-hit == 'true' && inputs.skip-install != 'true' }}
-      uses: MetaMask/action-retry-command@v1
+      uses: MetaMask/action-retry-command@2377689bfd9a03010a956b7c14273a2fc43d20cf # v1.0.1
       with:
         command: |
           if yarn bin allow-scripts &>/dev/null; then
@@ -404,7 +404,7 @@ runs:
     # main-branch cache scope (write-only mode).
     - name: Cache workspace
       if: ${{ steps.try-skip-setup.outputs.cache-hit != 'true' && steps.download-node-modules.outputs.cache-hit != 'true' && inputs.cache-node-modules == 'true' && inputs.skip-install != 'true' }}
-      uses: actions/cache/save@v6
+      uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ${{ steps.compute-node-modules-cache-paths.outputs.paths }}
         key: node-modules-${{ runner.os }}-${{ runner.arch }}-${{ steps.compute-node-version.outputs.node-version }}-${{ hashFiles('yarn.lock') }}
